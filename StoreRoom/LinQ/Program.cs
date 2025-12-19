@@ -95,6 +95,7 @@ var courseList = new List<Course>();
 studentList.Add(new Student { Name = "Vivek", CourseId = 1 });
 studentList.Add(new Student { Name = "Gaurav", CourseId = 2 });
 studentList.Add(new Student { Name = "Sanjay", CourseId = 1 });
+studentList.Add(new Student { Name = "Nikunj", CourseId = 3 });
 
 // Add some courses
 courseList.Add(new Course { CourseId = 1, CourseName = "Math", Students = new List<Student>() { studentList[0], studentList[2] } });
@@ -133,4 +134,48 @@ foreach (var group in groupJoinQuery)
     }
 }
 
+Console.WriteLine();
+Console.WriteLine("Left Outer Join..");
+
+var leftJoinQuery =
+    from student in studentList            // 'student' is the left collection
+    join course in courseList            // 'course' is the right collection
+    on student.CourseId equals course.CourseId into studentGroup // Group matching courses
+    from item in studentGroup.DefaultIfEmpty() // Handle non-matching students
+    select new
+    {
+        StudentName = student.Name,
+        CourseName = item?.CourseName ?? "Not Enrolled" // Handle potential nulls
+    };
+
+foreach (var result in leftJoinQuery)
+{
+    Console.WriteLine($"{result.StudentName} - {result.CourseName}");
+}
+
+
+Console.WriteLine();
+Console.WriteLine("Cross Join..");
+
+var crossJoinQuery =
+    from student in studentList
+    from course in courseList
+    select new { StudentName = student.Name, CourseName = course.CourseName };
+
+foreach (var result in crossJoinQuery)
+{
+    Console.WriteLine($"{result.StudentName} - {result.CourseName}");
+}
+
 Console.ReadLine();
+
+
+
+// Reference: https://medium.com/@ajuatahcodingarena/master-data-manipulation-with-linq-joins-in-c-bf08d312080b
+
+
+
+
+
+
+
