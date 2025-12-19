@@ -81,5 +81,56 @@ var sumPriceofAllBook = books.Sum(b => b.Price);
 var average = books.Average(b => b.Price);
 
 Console.WriteLine("maxPrice : {0} and min price : {1} and sum of all books : {2}, and finally average = {3}", maxPrice, minPrice, sumPriceofAllBook, average);
+Console.WriteLine();
+Console.WriteLine("Advance Topics..");
+Console.WriteLine();
+
+// Let's learn some Join related stuff..
+
+// Create Object of student and course lists
+var studentList = new List<Student>();
+var courseList = new List<Course>();
+
+// Add some students
+studentList.Add(new Student { Name = "Vivek", CourseId = 1 });
+studentList.Add(new Student { Name = "Gaurav", CourseId = 2 });
+studentList.Add(new Student { Name = "Sanjay", CourseId = 1 });
+
+// Add some courses
+courseList.Add(new Course { CourseId = 1, CourseName = "Math", Students = new List<Student>() { studentList[0], studentList[2] } });
+courseList.Add(new Course { CourseId = 2, CourseName = "Science", Students = new List<Student>() { studentList[1] } });
+
+Console.WriteLine("Inner Join.");
+
+var innerJoinQuery =    from s in studentList
+                        join c in courseList
+                        on s.CourseId equals c.CourseId
+                        select new { StudentName = s.Name, CourseName = c.CourseName };
+
+foreach(var result in innerJoinQuery)
+{
+    Console.WriteLine($"{result.StudentName} - {result.CourseName}");
+}
+
+Console.WriteLine();
+Console.WriteLine("Group Join..");
+
+// Group students by course (group join)
+var groupJoinQuery =
+    from course in courseList
+    join student in studentList
+    on course.CourseId equals student.CourseId
+    into studentGroup
+    select new { CourseName = course.CourseName, Students = studentGroup };
+
+// Print the results
+foreach (var group in groupJoinQuery)
+{
+    Console.WriteLine(group.CourseName);
+    foreach (var student in group.Students)
+    {
+        Console.WriteLine("   " + student.Name);
+    }
+}
 
 Console.ReadLine();
